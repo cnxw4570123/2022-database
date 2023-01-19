@@ -7,6 +7,12 @@
 import random, time 
 
 def sum2(A, n):
+    """
+    n개의 정수를 가진 A에 대하여 i <= j일 때 A i부터 j까지의 합을 B[i][j] 담아
+    n*n인 B를 반환하는 함수
+    param : n개의 정수를 가진 A
+    return : n*n인 B를 리턴
+    """
     bef = time.process_time()
     B = [[A[i] if i == j else 0 for j in range(n)] for i in range(n)]
     for i in range(n):
