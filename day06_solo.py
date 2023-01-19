@@ -1,4 +1,4 @@
-# manual decorator
+# decorator annotation 
 
 def func_info(f):
     def info(*args, **kwargs):
@@ -10,11 +10,10 @@ def func_info(f):
         return result
     return info
 
-
+@func_info
 def list_into_dict(list1, list2):
     dict1 = {w1 : w2 for w1, w2 in zip(list1, list2)}
     return dict1
 
 
-res1 = func_info(list_into_dict)
-res1(['a', 'b', 'c', 'd'],[1, 2, 3, 4])
+list_into_dict(['a', 'b', 'c', 'd'],[1, 2, 3, 4])
