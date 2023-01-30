@@ -20,24 +20,44 @@ class Stack:
     def __len__(self):
         return len(self.items)
     
+    def isEmpty(self):
+        return self.items.__len__() == 0
+    
+    def __str__(self):
+        return f"{self.items}"
+    
 
-def parChecker(parSeq):
-    S = Stack()
-    for p in parSeq:
-        if p == '(':
-            S.push(p)
-        elif p == ')':
-            if len(S) == 0:
-                return False
-            else:
-                S.pop()
+def infix_to_postfix(infix):
+    opstack = Stack()
+    outstack = []
+    token_list = infix.split()
+    
+    #연산자 우선순위 설정
+    prec = {
+        '(': 0,
+        '+': 1,
+        '-': 2,
+        '*': 3,
+        '/': 4,
+        '^': 5       
+    }
+    
+    for token in token_list:
+        if token == '(':
+            opstack.push(token)
+        elif token == ')':
+            while opstack.top() != '(':  # ( 아닐 때까지
+                outstack.append(opstack.pop())
+            opstack.pop()  # ( 제거
+        elif token in '+-/*^':
+            while not opstack.isEmpty() and prec[opstack.top()] > prec[token]:
+                outstack.append(opstack.pop())
+            opstack.push(token)
         else:
-            print('Not allowed Symbol')
-    if len(S) > 0:
-        return False
-    else:
-        return True
+            outstack.append(token)
 
+    while not opstack.isEmpty():
+        outstack.append(opstack.pop())
+    return " ".join(outstack)
 
-p = input("괄호 입력 > ")
-print(parChecker(p))
+print(infix_to_postfix('( a + b ) * c'))
