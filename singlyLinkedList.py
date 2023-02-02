@@ -53,8 +53,10 @@ class SinglyLinkedList:
     def pop_back(self):
         if self.size == 0:
             return None
+        elif self.size == 1:
+            key = self.head.key
+            self.head = None
         else:
-            # running technique
             prev, tail = None, self.head
             while tail.next is not None:
                 prev = tail
@@ -73,21 +75,18 @@ class SinglyLinkedList:
             v = v.next
         return v
 
-    def remove(self, x):  # node(1) -> node(2) -> node(3) -> node(4) -> node(5)
+    def remove(self, x):
         prev, v = None, self.head
+        if x is None:
+            return False
         while v:
-            if v.key == x:
-                # deleting first elem gives AttributeError
-                if prev is None:  # if first Node.key is x
+            if v == x:
+                if prev is None:
                     self.head = v.next
-                    del v
-                    return True
-                """
-                1. linking with prev_node and next_node
-                2. delete current node
-                """
-                prev.next = v.next
+                else:
+                    prev.next = v.next
                 del v
+                self.size -= 1
                 return True
             else:
                 prev = v
@@ -126,10 +125,10 @@ while True:
 
     elif cmd[0] == "search":
         x = L.search(int(cmd[1]))
-        if x:
-            print(f"{int(cmd[1])} is not found!")
-        else:
+        if x:  # None이면 false
             print(f"{int(cmd[1])} is found!")
+        else:
+            print(f"{int(cmd[1])} is not found!")
 
     elif cmd[0] == "remove":
         x = L.search(int(cmd[1]))
