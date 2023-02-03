@@ -1,3 +1,6 @@
+# __iter__(self) method inserted
+
+
 class Node:
     def __init__(self, key=None):
         self.key = key
@@ -16,8 +19,7 @@ class SinglyLinkedList:
         return self.size
 
     def printList(self):
-        v = self.head
-        while v:
+        for v in self:
             print(v.key, "->", end=" ")
             v = v.next
         print("None")
@@ -68,18 +70,17 @@ class SinglyLinkedList:
         return key
 
     def search(self, key):
-        v = self.head  # size 0이면 head None
-        while v:
+        for v in self:
             if v.key == key:
                 break
             v = v.next
         return v
 
     def remove(self, x):
-        prev, v = None, self.head
         if x is None:
             return False
-        while v:
+        for v in self:
+            prev = None
             if v == x:
                 if prev is None:
                     self.head = v.next
@@ -95,6 +96,12 @@ class SinglyLinkedList:
 
     def size(self):
         return self.size
+
+    def __iter__(self):
+        v = self.head
+        while v:
+            yield v
+            v = v.next
 
 
 L = SinglyLinkedList()
