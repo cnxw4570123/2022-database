@@ -121,7 +121,14 @@ class DoublyLinkedList:
             return None
         j_head = j_list.head.next
         j_tail = j_list.head.prev
-        self.splice(j_head, j_tail, self.head)
+        self.splice(j_head, j_tail, self.head.prev)
+
+    def split(self, node):  # search랑 연계해서 노드 찾고 실행
+        if node is None or node.key is None:
+            return self, None
+        new_list = DoublyLinkedList()
+        self.splice(node, self.head.prev, new_list.head)
+        return self, new_list
 
 
 L = DoublyLinkedList()
@@ -135,7 +142,14 @@ D.push_back(40)
 print("D =", end=" ")
 D.print_list()
 L.join(D)
+del D
 L.print_list()
+setter = L.search(30)
+print(setter)
+L, D = L.split(setter)
+L.print_list()
+D.print_list()
+
 # while True:
 #     cmd = input().split()
 #     if cmd[0] == "pushF":
