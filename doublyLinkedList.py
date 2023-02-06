@@ -33,7 +33,7 @@ class DoublyLinkedList:
             v = v.next
         print("h")
 
-    def splice(self, a, b, x):  # a b 사이에 head가 있으면?
+    def splice(self, a, b, x):
         """
         a부터 b까지의 노드를 x이후로 연결하는 함수
         Args:
@@ -63,17 +63,15 @@ class DoublyLinkedList:
         self.move_before(Node(key), node)
         self.size += 1
 
-    def insert_after(self, node, key):  # inserta key_x key
+    def insert_after(self, node, key):
         self.move_after(Node(key), node)
         self.size += 1
 
     def push_front(self, key):
         self.insert_after(self.head, key)
-        self.size += 1
 
     def push_back(self, key):
         self.insert_before(self.head, key)
-        self.size += 1
 
     def delete_node(self, node):
         if node is None or node == self.head:
@@ -83,14 +81,14 @@ class DoublyLinkedList:
         self.size -= 1
 
     def pop_front(self):
-        if self.head.next == self.head:
+        if self.is_empty:
             return None
         key = self.head.next.key
         self.delete_node(self.head.next)
         return key
 
     def pop_back(self):
-        if self.head.prev == self.head:
+        if self.is_empty:
             return None
         key = self.head.prev.key
         self.delete_node(self.head.prev)
@@ -103,80 +101,97 @@ class DoublyLinkedList:
         return None
 
     def is_empty(self):
-        if self.head.next == self.head:
-            return True
-        return False
+        if len(self):
+            return False
+        return True
 
     def first(self):
-        if self.is_empty():
+        if not self.is_empty():
             return None
         return self.head.next
 
     def last(self):
-        if self.is_empty():
+        if not self.is_empty():
             return None
         return self.head.prev
 
     # join, split 구현
+    def join(self, j_list):
+        if j_list.is_empty():
+            return None
+        j_head = j_list.head.next
+        j_tail = j_list.head.prev
+        self.splice(j_head, j_tail, self.head)
 
 
 L = DoublyLinkedList()
-while True:
-    cmd = input().split()
-    if cmd[0] == "pushF":
-        L.push_front(int(cmd[1]))
-        print("+ {0} is pushed at Front".format(cmd[1]))
-    elif cmd[0] == "pushB":
-        L.push_back(int(cmd[1]))
-        print("+ {0} is pushed at Back".format(cmd[1]))
-    elif cmd[0] == "popF":
-        key = L.pop_front()
-        if key is None:
-            print("* list is empty")
-        else:
-            print("- {0} is popped from Front".format(key))
-    elif cmd[0] == "popB":
-        key = L.pop_back()
-        if key is None:
-            print("* list is empty")
-        else:
-            print("- {0} is popped from Back".format(key))
-    elif cmd[0] == "search":
-        v = L.search(int(cmd[1]))
-        if v is None:
-            print("* {0} is not found!".format(cmd[1]))
-        else:
-            print("* {0} is found!".format(cmd[1]))
-    elif cmd[0] == "insertA":
-        # inserta key_x key : key의 새 노드를 key_x를 갖는 노드 뒤에 삽입
-        x = L.search(int(cmd[1]))
-        if x is None:
-            print("* target node of key {0} doesn't exit".format(cmd[1]))
-        else:
-            L.insert_after(x, int(cmd[2]))
-            print("+ {0} is inserted After {1}".format(cmd[2], cmd[1]))
-    elif cmd[0] == "insertB":
-        # inserta key_x key : key의 새 노드를 key_x를 갖는 노드 앞에 삽입
-        x = L.search(int(cmd[1]))
-        if x is None:
-            print("* target node of key {0} doesn't exit".format(cmd[1]))
-        else:
-            L.insert_before(x, int(cmd[2]))
-            print("+ {0} is inserted Before {1}".format(cmd[2], cmd[1]))
-    elif cmd[0] == "delete":
-        x = L.search(int(cmd[1]))
-        if x is None:
-            print("- {0} is not found, so nothing happens".format(cmd[1]))
-        else:
-            L.delete_node(x)
-            print("- {0} is deleted".format(cmd[1]))
-    elif cmd[0] == "first":
-        print("* {0} is the value at the front".format(L.first()))
-    elif cmd[0] == "last":
-        print("* {0} is the value at the back".format(L.last()))
-    elif cmd[0] == "print":
-        L.print_list()
-    elif cmd[0] == "exit":
-        break
-    else:
-        print("* not allowed command. enter a proper command!")
+L.push_front(10)
+L.push_back(20)
+print("L = ", end="")
+L.print_list()
+D = DoublyLinkedList()
+D.push_back(30)
+D.push_back(40)
+print("D =", end=" ")
+D.print_list()
+L.join(D)
+L.print_list()
+# while True:
+#     cmd = input().split()
+#     if cmd[0] == "pushF":
+#         L.push_front(int(cmd[1]))
+#         print("+ {0} is pushed at Front".format(cmd[1]))
+#     elif cmd[0] == "pushB":
+#         L.push_back(int(cmd[1]))
+#         print("+ {0} is pushed at Back".format(cmd[1]))
+#     elif cmd[0] == "popF":
+#         key = L.pop_front()
+#         if key is None:
+#             print("* list is empty")
+#         else:
+#             print("- {0} is popped from Front".format(key))
+#     elif cmd[0] == "popB":
+#         key = L.pop_back()
+#         if key is None:
+#             print("* list is empty")
+#         else:
+#             print("- {0} is popped from Back".format(key))
+#     elif cmd[0] == "search":
+#         v = L.search(int(cmd[1]))
+#         if v is None:
+#             print("* {0} is not found!".format(cmd[1]))
+#         else:
+#             print("* {0} is found!".format(cmd[1]))
+#     elif cmd[0] == "insertA":
+#         # inserta key_x key : key의 새 노드를 key_x를 갖는 노드 뒤에 삽입
+#         x = L.search(int(cmd[1]))
+#         if x is None:
+#             print("* target node of key {0} doesn't exit".format(cmd[1]))
+#         else:
+#             L.insert_after(x, int(cmd[2]))
+#             print("+ {0} is inserted After {1}".format(cmd[2], cmd[1]))
+#     elif cmd[0] == "insertB":
+#         # inserta key_x key : key의 새 노드를 key_x를 갖는 노드 앞에 삽입
+#         x = L.search(int(cmd[1]))
+#         if x is None:
+#             print("* target node of key {0} doesn't exit".format(cmd[1]))
+#         else:
+#             L.insert_before(x, int(cmd[2]))
+#             print("+ {0} is inserted Before {1}".format(cmd[2], cmd[1]))
+#     elif cmd[0] == "delete":
+#         x = L.search(int(cmd[1]))
+#         if x is None:
+#             print("- {0} is not found, so nothing happens".format(cmd[1]))
+#         else:
+#             L.delete_node(x)
+#             print("- {0} is deleted".format(cmd[1]))
+#     elif cmd[0] == "first":
+#         print("* {0} is the value at the front".format(L.first()))
+#     elif cmd[0] == "last":
+#         print("* {0} is the value at the back".format(L.last()))
+#     elif cmd[0] == "print":
+#         L.print_list()
+#     elif cmd[0] == "exit":
+#         break
+#     else:
+#         print("* not allowed command. enter a proper command!")
