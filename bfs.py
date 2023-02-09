@@ -53,26 +53,26 @@ def make_graph():  # directed Graph without weight
     return g1
 
 
-def bfs_search(Graph, start, visited):
+def dfs_search(Graph, start, visited):
     """
     _summary_
 
     Args:
-        Graph (_type_): Graph instance
-        start (_type_): certain index of Graph
-        visited (_type_): record visted vertex
+        Graph (Graph): Graph instance
+        start (int): certain index of Graph
+        visited (list): record visted vertex
     """
     visited = [False for _ in range(Graph.SIZE)]
-    queue = deque([start])
+    stack = [start]
     visited[start] = True  # insert First Vertex
 
-    while queue:  # while queue is not empty
-        v = queue.popleft()
+    while stack:  # while  stack is not empty
+        v = stack.pop()
         print(Graph.vertex[v], end=" -> ")
 
         for i in range(Graph.SIZE):
             if Graph.graph[v][i] and not visited[i]:  # if start adjacent
-                queue.append(i)
+                stack.append(i)
                 visited[i] = True
     print("end")
 
@@ -80,4 +80,4 @@ def bfs_search(Graph, start, visited):
 edges = []
 g1 = make_graph()
 visited = []
-bfs_search(g1, 0, visited=visited)
+dfs_search(g1, 0, visited=visited)
