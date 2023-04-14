@@ -1,36 +1,19 @@
+# prob : 21921
+
+
 from sys import stdin
 
 
-def DFS(graph, idx):
-    visited = [False for _ in range(n + 1)]
-    cost = [0 for _ in range(n + 1)]
-    stack = [idx]
-    visited[idx] = True
-    while stack:
-        current = stack.pop()
-        if not visited[current]:
-            visited[current] = True
-        for child, len in graph[current]:
-            if not visited[child]:
-                stack.append(child)
-                cost[child] += cost[current] + len
-    max_val = max(cost)
-    index = cost.index(max_val)
-    return (index, max_val)
+n, x = map(int, stdin.readline().split())
+visitors = list(map(int, stdin.readline().split()))
+window = sum(visitors[:x])
+max = [window, 1]
+for i in range(x, n):
+    window += visitors[i] - visitors[i - x]
+    if window > max[0]:
+        max[0] = window
+        max[1] = 1
+    elif window == max[0]:
+        max[1] += 1
 
-
-n = int(stdin.readline().strip())
-graph = [[] for _ in range(n + 1)]
-count = n
-while count > 0:
-    count -= 1
-    v_list = list(map(int, stdin.readline().split()))
-    for idx in range(len(v_list) // 2 - 1):
-        v = (idx * 2) + 1
-        v_len = (idx + 1) * 2
-        graph[v_list[0]].append([v_list[v], v_list[v_len]])
-
-node, cost = DFS(graph, 1)
-node2, cost2 = DFS(graph, node)
-
-print(max(cost, cost2))
+print("SAD" if max[0] == 0 else "\n".join(map(str, max)))
