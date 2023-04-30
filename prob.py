@@ -1,40 +1,32 @@
-from sys import stdin
-from collections import deque
+# prob : 1018
+# https://www.acmicpc.net/problem/1018
 
-# prob : 14267
-# https://www.acmicpc.net/problem/14267
+import sys
 
-
-def applause(graph, idx, app_total):
-    visited = [False for _ in range(n + 1)]
-    queue = deque()
-    queue.append(idx)
-    while queue:
-        current = queue.popleft()
-        if not visited[current]:
-            visited[current] = True
-        for child in graph[current]:
-            queue.append(child)
-            app_total[child] += app_total[current]
+input = sys.stdin.readline
+n, m = map(int, input().split())  # 세로, 가로
+checker = [input().rstrip() for _ in range(n)]
+color = ["W", "B"]
+cnt = 0
+ans = []
+i = j = 0
 
 
-if __name__ == "__main__":
-    n, m = map(int, stdin.readline().split())
-    workers = list(map(int, stdin.readline().split()))
-    graph = [[] for _ in range(n + 1)]
-    app_total = [0 for _ in range(n + 1)]
-    idx = 1
-    for prnt in workers:
-        if prnt == -1:
-            continue
-        graph[prnt].append(idx + 1)
-        idx += 1
+while i + 7 < n and j + 7 < m:
+    left = checker[i][j]
+    idx = color.index(left)
+    for h in range(i, i + 8):
+        for w in range(j, j + 8):  # 가로 한 칸씩 변경
+            if color[idx] != checker[h][w]:  # 다시 색칠해야 하면
+                cnt += 1
+            idx = (idx + 1) % 2  # color안에서 계속 바뀌도록 함
+        idx = (idx + 1) % 2  # h 변경, 변을 공유하므로 색 변경
 
-    for _ in range(m):
-        i, w = map(int, stdin.readline().split())
-        app_total[i] = w
+    ans.append(min(cnt, 64 - cnt))
+    cnt = 0
+    j += 1
+    if j + 7 == m:  # 가로의 모든 칸을 탐색하면
+        i += 1  # 세로 한 칸 이동
+        j = 0  # 가로 초기화
 
-    applause(graph, 1, app_total)
-
-    for i in range(1, n + 1):
-        print(app_total[i], end=" ")
+print(min(ans))
