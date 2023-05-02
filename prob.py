@@ -1,46 +1,39 @@
-# prob : 1260
-# https://www.acmicpc.net/problem/1260
+# prob : 1012
+# https://www.acmicpc.net/problem/1012
 
-from sys import stdin
-from collections import deque
+import sys
 
-input = stdin.readline
-
-
-def BFS(graph, idx):
-    visited = [False] * (n + 1)
-    q = deque()
-    q.append(idx)
-    while q:
-        current = q.popleft()
-        if not visited[current]:
-            visited[current] = True
-            print(current, end=" ")
-        for c in range(len(graph[current])):
-            if graph[current][c] and not visited[c]:
-                q.append(c)
+input = sys.stdin.readline
+sys.setrecursionlimit(10000)
+t = int(input())
 
 
-def DFS(graph, idx):
-    visited = [False] * (n + 1)
-    stack = [idx]
-    while stack:
-        current = stack.pop()
-        if not visited[current]:
-            visited[current] = True
-            print(current, end=" ")
-        for c in range(len(graph[current]) - 1, -1, -1):
-            if graph[current][c] and not visited[c]:
-                stack.append(c)
+def make_graph(m, n, k):
+    graph = [[0] * m for _ in range(n)]
+    for _ in range(k):
+        a, b = map(int, input().split())
+        graph[b][a] = 1
+    return graph
 
 
-n, m, v = map(int, input().split())
-graph = [[0] * (n + 1) for _ in range(n + 1)]
-for _ in range(m):
-    a, b = map(int, input().split())
-    graph[a][b] = 1
-    graph[b][a] = 1
+def is_lettuce(h, w, graph, v):
+    v[h][w] = True
+    for y, x in [[-1, 0], [1, 0], [0, 1], [0, -1]]:
+        ny = y + h
+        nx = x + w
+        if 0 <= ny <= n - 1 and 0 <= nx <= m - 1:
+            if graph[ny][nx] and not v[ny][nx]:
+                is_lettuce(ny, nx, graph, v)
 
-DFS(graph, v)
-print()
-BFS(graph, v)
+
+for _ in range(t):
+    lettuce_bug = 0
+    m, n, k = map(int, input().split())
+    graph = make_graph(m, n, k)
+    v = [[False] * m for _ in range(n)]
+    for h in range(n):
+        for w in range(m):
+            if graph[h][w] and not v[h][w]:
+                lettuce_bug += 1
+                is_lettuce(h, w, graph, v)
+    print(lettuce_bug)
