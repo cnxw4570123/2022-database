@@ -1,39 +1,44 @@
-# prob : 1012
-# https://www.acmicpc.net/problem/1012
+# prob : 1303
+# https://www.acmicpc.net/problem/1303
 
 import sys
 
+
 input = sys.stdin.readline
-sys.setrecursionlimit(10000)
-t = int(input())
+sys.setrecursionlimit(100000)
 
 
-def make_graph(m, n, k):
-    graph = [[0] * m for _ in range(n)]
-    for _ in range(k):
-        a, b = map(int, input().split())
-        graph[b][a] = 1
-    return graph
+def distinguish(h, w, graph, v, color):
+    cnt = 0
+    for y, x in [[-1, 0], [1, 0], [0, -1], [0, 1]]:
+        ny, nx = h + y, w + x
+        if 0 <= ny <= m - 1 and 0 <= nx <= n - 1:
+            if graph[ny][nx] == color and not v[ny][nx]:
+                v[ny][nx] = True
+                cnt = cnt + 1 + distinguish(ny, nx, graph, v, color)
+    return cnt
 
 
-def is_lettuce(h, w, graph, v):
-    v[h][w] = True
-    for y, x in [[-1, 0], [1, 0], [0, 1], [0, -1]]:
-        ny = y + h
-        nx = x + w
-        if 0 <= ny <= n - 1 and 0 <= nx <= m - 1:
-            if graph[ny][nx] and not v[ny][nx]:
-                is_lettuce(ny, nx, graph, v)
+w_power, b_power = 0, 0
 
+n, m = map(int, input().split())  # 가로, 세로
 
-for _ in range(t):
-    lettuce_bug = 0
-    m, n, k = map(int, input().split())
-    graph = make_graph(m, n, k)
-    v = [[False] * m for _ in range(n)]
-    for h in range(n):
-        for w in range(m):
-            if graph[h][w] and not v[h][w]:
-                lettuce_bug += 1
-                is_lettuce(h, w, graph, v)
-    print(lettuce_bug)
+war_zone = [input().rstrip() for _ in range(m)]
+
+v = [[False] * n for _ in range(m)]
+
+for h in range(m):
+    for w in range(n):
+        if war_zone[h][w] == "W":
+            if not v[h][w]:
+                v[h][w] = True
+                w_cnt = 1
+                w_cnt += distinguish(h, w, war_zone, v, "W")
+                w_power += w_cnt * w_cnt
+        else:
+            if not v[h][w]:
+                v[h][w] = True
+                b_cnt = 1
+                b_cnt += distinguish(h, w, war_zone, v, "B")
+                b_power += b_cnt * b_cnt
+print(w_power, b_power)
