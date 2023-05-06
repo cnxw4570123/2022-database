@@ -1,32 +1,19 @@
-# prob : 28015
-# https://www.acmicpc.net/problem/28015
+# prob : 28014
+# https://www.acmicpc.net/problem/28014
 
-import sys
+n = int(input())
 
-input = sys.stdin.readline
+top = list(map(int, input().split()))
 
+s = [top[0]]
+ans = 1
 
-def draw(graph, board, idx, end, color):
-    if idx <= end:
-        if graph[idx] and graph[idx] != board[idx]:
-            board[idx] = color
-            draw(graph, board, idx + 1, end, color)
-
-
-n, m = map(int, input().split())
-ans = 0
-for _ in range(n):
-    line = list(map(int, input().split()))
-    board = [0] * m
-
-    while line != board:
-        start, end = 0, m - 1
-        while start <= end:
-            if line[start] != board[start]:
-                ans += 1
-                draw(line, board, start, end, line[start])
-            if line[end] == board[end]:
-                end -= 1
-            start += 1
+for h in top[1::]:
+    current = s.pop()
+    if current <= h:
+        ans += 1
+    else:
+        s.append(current)
+    s.append(h)
 
 print(ans)
