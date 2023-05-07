@@ -1,19 +1,29 @@
-# prob : 28014
-# https://www.acmicpc.net/problem/28014
+# prob : 1463
+# https://www.acmicpc.net/problem/1463
 
-n = int(input())
 
-top = list(map(int, input().split()))
-
-s = [top[0]]
-ans = 1
-
-for h in top[1::]:
-    current = s.pop()
-    if current <= h:
-        ans += 1
+def make_one(memo, i):
+    if memo[i]:
+        return memo[i]
     else:
-        s.append(current)
-    s.append(h)
+        i_minus_one = 1 + make_one(memo, i - 1)
+        div_3, div_2 = int(1e9), int(1e9)
+        if i % 3 == 0:
+            div_3 = memo[3] + make_one(memo, i // 3)
 
-print(ans)
+        if i % 2 == 0:
+            div_2 = memo[2] + make_one(memo, i // 2)
+
+        memo[i] = min(div_3, div_2, i_minus_one)
+
+    return memo[i]
+
+
+ans = 0
+n = int(input())
+memo = [0, 0, 1, 1] + [0 for _ in range(4, n + 1)]  # 메모이제이션 준비
+
+for i in range(4, n + 1):
+    make_one(memo, i)
+
+print(memo[n])
