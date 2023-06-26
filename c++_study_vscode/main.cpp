@@ -7,53 +7,38 @@
 using namespace std;
 #define FastIO                                                                 \
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr)
-#define MAX 1000001
+#define MAX 21
 #define endl '\n'
 #define All(v) v.begin(), v.end()
 
-int L, C;
-string letters;
-char letter;
-bool v[15];
-vector<string> ans;
-void make_per(int idx, int cnt) {
-    if (cnt == L) {
-        string temp;
-        for (int i = 0; i < C; i++) {
-            if (v[i]) temp += letters[i];
-        }
-        ans.push_back(temp);
-        return;
+typedef pair<pair<int, int>, int> piii;
+
+int R, C, dy[] = {-1, 1, 0, 0}, dx[] = {0, 0, -1, 1}, ans = 0;
+char Map[MAX][MAX];
+bool alphabet[26];
+void DFS(int y, int x, int dist) {
+    for (int i = 0; i < 4; i++) {
+        int ny = y + dy[i], nx = x + dx[i];
+        if (ny > R || nx > C || ny < 1 || nx < 1 || alphabet[Map[ny][nx] - 'A'])
+            continue;
+        alphabet[Map[ny][nx] - 'A'] = true;
+        DFS(ny, nx, dist + 1);
+        alphabet[Map[ny][nx] - 'A'] = false;
     }
-    for (int i = idx; i < C; i++) {
-        if (v[i]) continue;
-        v[i] = true;
-        make_per(i, cnt + 1);
-        v[i] = false;
-    }
+    ans = max(ans, dist);
 }
 
 int main() {
     FastIO;
-    cin >> L >> C;
-    for (int i = 0; i < C; i++) {
-        cin >> letter;
-        letters += letter;
-    }
-    sort(All(letters));
-    make_per(0, 0);
+    cin >> R >> C;
 
-    int pos;
-    for (auto s : ans) {
-        // **최소 두 개의 자음으로 구성되어 있다고 알려져 있다**
-        int vCount = 0, cCount = 0;
-        for (int i = 0; i < L; i++) {
-            if(s[i] == 'a' || s[i] == 'e' || s[i] == 'i' || s[i] == 'o' || s[i] == 'u')
-                vCount++;
-            else
-                cCount++;
+    for (int i = 1; i < R + 1; i++) {
+        for (int j = 1; j < C + 1; j++) {
+            cin >> Map[i][j];
         }
-        if (vCount > 0 && cCount > 1) cout << s << endl;
     }
+    alphabet[Map[1][1] - 'A'] = true;
+    DFS(1, 1, 1);
+    cout << ans;
     return 0;
 }
