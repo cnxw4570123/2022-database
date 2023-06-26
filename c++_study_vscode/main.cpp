@@ -1,65 +1,59 @@
 #include <algorithm>
+#include <cmath>
 #include <cstring>
 #include <iostream>
 #include <queue>
-#include <cmath>
 
 using namespace std;
 #define FastIO                                                                 \
     ios_base::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr)
-#define MAX 10000
+#define MAX 1000001
 #define endl '\n'
-bool isPrime[MAX];
-typedef long long ll;
-bool v[MAX];
-void Era() {
-    fill_n(isPrime, MAX, true);
-    isPrime[0] = isPrime[1] = false;
+#define All(v) v.begin(), v.end()
 
-    for (int i = 2; i <= sqrt(MAX); i++) {
-        if (!isPrime[i]) continue;
-        for (int j = 2; j * i <= MAX; j++) {
-            isPrime[j * i] = false;
+int L, C;
+string letters;
+char letter;
+bool v[15];
+vector<string> ans;
+void make_per(int idx, int cnt) {
+    if (cnt == L) {
+        string temp;
+        for (int i = 0; i < C; i++) {
+            if (v[i]) temp += letters[i];
         }
+        ans.push_back(temp);
+        return;
+    }
+    for (int i = idx; i < C; i++) {
+        if (v[i]) continue;
+        v[i] = true;
+        make_per(i, cnt + 1);
+        v[i] = false;
     }
 }
 
-void BFS(int start, int end) {
-    memset(v, false, sizeof(v));
-    queue<pair<int, int>> q;
-    q.push({start, 0});
-    v[start] = true;
-    while (!q.empty()) {
-        int current = q.front().first, cnt = q.front().second;
-        q.pop();
-        if (current == end) {
-            cout << cnt << endl;
-            return;
-        }
-        for (int i = 0; i < 4; i++) {
-            string temp = to_string(current);
-            for (int j = 0; j < 10; j++) {
-                temp[i] = j + '0';
-                int candidate = stoi(temp);
-                if (candidate > 10000 || candidate < 1000 || v[candidate] ||
-                    !isPrime[candidate])
-                    continue;
-                v[candidate] = true;
-                q.push({candidate, cnt + 1});
-            }
-        }
-    }
-    cout << "Impossible" << endl;
-}
-int T, s, e;
 int main() {
     FastIO;
-    Era();
-    cin >> T;
-    while (T-- > 0) {
-        cin >> s >> e;
-        BFS(s, e);
+    cin >> L >> C;
+    for (int i = 0; i < C; i++) {
+        cin >> letter;
+        letters += letter;
     }
+    sort(All(letters));
+    make_per(0, 0);
 
+    int pos;
+    for (auto s : ans) {
+        // **최소 두 개의 자음으로 구성되어 있다고 알려져 있다**
+        int vCount = 0, cCount = 0;
+        for (int i = 0; i < L; i++) {
+            if(s[i] == 'a' || s[i] == 'e' || s[i] == 'i' || s[i] == 'o' || s[i] == 'u')
+                vCount++;
+            else
+                cCount++;
+        }
+        if (vCount > 0 && cCount > 1) cout << s << endl;
+    }
     return 0;
 }
